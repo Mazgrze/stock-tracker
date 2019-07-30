@@ -1,0 +1,16 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "rules": {
+    "no-undef": "off",
+    "linebreak-style": "off",
+    "react/prop-types": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/destructuring-assignment": [
+      "always",
+      {
+        "ignoreClassFields": true
+      }
+    ]
+  }
+}
