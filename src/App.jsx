@@ -3,7 +3,7 @@ import {
   Row, Container, Navbar, Nav, Col,
 } from 'react-bootstrap';
 import Axios from 'axios';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Route, Link } from 'react-router-dom';
 import CompanyFinder from './Company-finder/Company-finder';
 import Companies from './Companies/Companies';
 import apiKey from './utils/api';
@@ -82,7 +82,7 @@ function App() {
   }
 
   return (
-    <Router basename={process.env.NODE_ENV === 'production' ? '/stock-tracker' : ''}>
+    <Router>
       <Navbar bg="light" expand="sm">
         <Navbar.Brand href="#home">Stock tracker</Navbar.Brand>
         <Nav className="mr-auto" onClick={clearResults}>
