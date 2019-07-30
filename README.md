@@ -3,6 +3,8 @@
 React app to track stock data of selected companies.
 Project uses react, react-router, bootstrap and axios.
 
+demo is available on https://mazgrze.github.io/stock-tracker
+
 
 ## Available Scripts
 
@@ -30,6 +32,16 @@ The build is minified and the filenames include the hashes.<br>
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+
+### `npm run predeploy`
+
+Builds the app for production to the `build` folder.<br>
+like `build`
+
+### `npm run deploy`
+
+Builds the app for production and deploys it to github pages using gh-pages lib<br>
 
 ### `npm run eject`
 

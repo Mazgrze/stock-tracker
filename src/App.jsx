@@ -82,7 +82,7 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename={process.env.NODE_ENV === 'production' ? '/stock-tracker' : ''}>
       <Navbar bg="light" expand="sm">
         <Navbar.Brand href="#home">Stock tracker</Navbar.Brand>
         <Nav className="mr-auto" onClick={clearResults}>
