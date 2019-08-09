@@ -7,6 +7,7 @@ import CompanyFinder from './Company-finder/Company-finder';
 import apiKey from './utils/api';
 import cleanKeys, { cleanCompanyName } from './utils/utils';
 
+const cachedCompanies = JSON.parse(localStorage.getItem('stockTrackerCompanies')) || [];
 function App() {
   const [companies, setCompanies] = useState(cachedCompanies);
   const [searchResults, setSearchResults] = useState([]);
