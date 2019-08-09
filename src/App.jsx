@@ -14,29 +14,41 @@ const cachedCompanies = JSON.parse(localStorage.getItem('stockTrackerCompanies')
 function App() {
   const [companies, setCompanies] = useState(cachedCompanies);
   const [searchResults, setSearchResults] = useState([]);
-  /* eslint-disable no-restricted-syntax */
-  async function updateStock() {
-    const updatedCompanies = [];
 
-    for (const company of companies) {
-      // eslint-disable-next-line no-await-in-loop
-      const request = await Axios.get(
-        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${
-          company.symbol
-        }&apikey=${apiKey}`,
-      );
-
-      const apiData = cleanKeys(request.data['Global Quote']);
-      company.change = apiData.change;
-      company.percentChange = apiData['change percent'];
-      company.price = apiData.price;
-      company.closed = apiData['latest trading day'];
-      updatedCompanies.push(company);
-    }
-    localStorage.setItem('stockTrackerCompanies', JSON.stringify(updatedCompanies));
-    setCompanies(updatedCompanies);
+  function companyFactory(companyIndex, companiesArray) {
+    return {
+      index: companyIndex,
+      symbol: companiesArray[companyIndex].symbol,
+      getData() {
+        return Axios.get(
+          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${
+            // eslint-disable-next-line react/no-this-in-sfc
+            this.symbol
+          }&apikey=${apiKey}`,
+        ).then((response) => {
+          const apiData = cleanKeys(response.data['Global Quote']);
+          /* eslint-disable no-param-reassign */
+          companiesArray[this.index].change = Math.random() * (30 - 0) + 0;
+          companiesArray[this.index].percentChange = Math.random(); // "-0.8240%"
+          companiesArray[this.index].price = Math.random() * 100;
+          companiesArray[this.index].closed = apiData['latest trading day'];
+          /* eslint-enable no-param-reassign */
+          setCompanies(companiesArray);
+        });
+      },
+    };
   }
-  /* eslint-enable no-restricted-syntax */
+
+  async function updateStock() {
+    // deep copy
+    const updatedCompanies = companies.map(obj => ({ ...obj }));
+    let requests = updatedCompanies.map((v, i) => companyFactory(i, updatedCompanies));
+    requests = requests.map(obj => obj.getData());
+    Promise.all(requests).then(() => {
+      // save updated data
+      localStorage.setItem('stockTrackerCompanies', JSON.stringify(updatedCompanies));
+    });
+  }
 
   useEffect(() => {
     updateStock();

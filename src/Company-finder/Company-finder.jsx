@@ -30,11 +30,11 @@ export default function CompanyFinder({
       .catch(x => console.log(x));
   }
 
-  function debaunceRequests(e) {
+  function debounceRequests(e) {
     e.stopPropagation();
     const val = e.target.value;
     if (val.length) {
-      // Debaunce input
+      // Debounce input
       clearTimeout(throttle);
       throttle = setTimeout(() => {
         askApi(val);
@@ -57,7 +57,7 @@ export default function CompanyFinder({
         <Form onSubmit={submitSearch}>
           <Row>
             <Col sm={8}>
-              <Form.Control ref={input} type="text" onChange={debaunceRequests} />
+              <Form.Control ref={input} type="text" onChange={debounceRequests} />
             </Col>
             <Col>
               <Button onClick={submitSearch}>Search</Button>
