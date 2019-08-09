@@ -1,7 +1,7 @@
 import React from 'react';
-import { Media, Row, Col } from 'react-bootstrap';
-import upImage from './up.png';
+import { Col, Media, Row } from 'react-bootstrap';
 import downImage from './down.png';
+import upImage from './up.png';
 
 export default function Companies({ companies }) {
   const companyList = companies.map(company => (
@@ -13,7 +13,7 @@ export default function Companies({ companies }) {
           <span>&nbsp;&nbsp;</span>
           <small>
             <span>&nbsp;&nbsp;</span>
-            {`${company.symbol}`}
+            {company.symbol}
             <span>&nbsp;&nbsp;</span>
             <a href={company.domain}>{company.domain}</a>
           </small>
@@ -22,7 +22,7 @@ export default function Companies({ companies }) {
           {`${company.region} ${company.marketOpen} - ${company.marketClose} ${company.timezone}`}
         </p>
         <p>
-          {isNaN(company.price) ? (
+          {Number.isNaN(company.price) ? (
             <b className="text-danger">Error</b>
           ) : (
             <>

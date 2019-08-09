@@ -1,14 +1,10 @@
-import React from 'react';
 import axios from 'axios';
-import {
-  Form, Button, Row, Col, Table,
-} from 'react-bootstrap';
+import React from 'react';
+import { Button, Col, Form, Row, Table } from 'react-bootstrap';
 import apiKey from '../utils/api';
 import cleanKeys from '../utils/utils';
 
-export default function CompanyFinder({
-  addCompany, companies, results, updateResults,
-}) {
+export default function CompanyFinder({ addCompany, companies, results, updateResults }) {
   let throttle;
   const selected = companies.map(el => el.symbol);
 
@@ -21,9 +17,9 @@ export default function CompanyFinder({
           keyWord,
         )}&apikey=${apiKey}`,
       )
-      .then((resp) => {
+      .then(({ data: { bestMatches } }) => {
         // Clean data keys
-        const companyList = resp.data.bestMatches.map(el => cleanKeys(el));
+        const companyList = bestMatches.map(el => cleanKeys(el));
         updateResults(companyList);
       })
       // eslint-disable-next-line no-console

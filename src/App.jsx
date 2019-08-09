@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Row, Container, Navbar, Nav, Col,
-} from 'react-bootstrap';
 import Axios from 'axios';
-import { HashRouter as Router, Route, Link } from 'react-router-dom';
-import CompanyFinder from './Company-finder/Company-finder';
+import React, { useEffect, useState } from 'react';
+import { Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
+import { HashRouter as Router, Link, Route } from 'react-router-dom';
 import Companies from './Companies/Companies';
+import CompanyFinder from './Company-finder/Company-finder';
 import apiKey from './utils/api';
 import cleanKeys, { cleanCompanyName } from './utils/utils';
-
-const cachedCompanies = JSON.parse(localStorage.getItem('stockTrackerCompanies')) || [];
 
 function App() {
   const [companies, setCompanies] = useState(cachedCompanies);
@@ -27,12 +23,8 @@ function App() {
           }&apikey=${apiKey}`,
         ).then((response) => {
           const apiData = cleanKeys(response.data['Global Quote']);
-          /* eslint-disable no-param-reassign */
-          companiesArray[this.index].change = Math.random() * (30 - 0) + 0;
-          companiesArray[this.index].percentChange = Math.random(); // "-0.8240%"
-          companiesArray[this.index].price = Math.random() * 100;
-          companiesArray[this.index].closed = apiData['latest trading day'];
-          /* eslint-enable no-param-reassign */
+          // eslint-disable-next-line no-param-reassign
+          companiesArray[this.index] = { ...companiesArray[this.index], ...apiData };
           setCompanies(companiesArray);
         });
       },
@@ -54,38 +46,28 @@ function App() {
     updateStock();
   }, []);
 
-  function addCompany(company) {
+  async function addCompany(company) {
     try {
-      const newCompany = { ...company };
+      let newCompany = { ...company };
       const name = cleanCompanyName(company.name);
       // Get logo
-      Axios.get(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${name}`)
-        .then((response) => {
-          newCompany.logo = response.data[0].logo || '';
-          newCompany.domain = response.data[0].domain || '';
-        })
-        .then(() => Axios.get(
-          `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${
-            company.symbol
-          }&apikey=${apiKey}`,
-        ))
-        .then((resp) => {
-          const quote = cleanKeys(resp.data['Global Quote']);
-          newCompany.change = quote.change;
-          newCompany.percentChange = quote['change percent'];
-          newCompany.price = quote.price;
-          newCompany.closed = quote['latest trading day'];
-        })
-        // eslint-disable-next-line no-console
-        .catch(e => console.log(e))
-        .finally(() => {
-          const newCompanies = [...companies, newCompany];
-          localStorage.setItem('stockTrackerCompanies', JSON.stringify(newCompanies));
-          setCompanies(newCompanies);
-        });
+      const {
+        data: [searchResult],
+      } = await Axios.get(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${name}`);
+      const { data: secondData } = await Axios.get(
+        `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${
+          company.symbol
+        }&apikey=${apiKey}`,
+      );
+      const quote = cleanKeys(secondData['Global Quote']);
+      newCompany = { ...newCompany, ...searchResult, ...quote };
+
+      const newCompanies = [...companies, newCompany];
+      setCompanies(newCompanies);
+      localStorage.setItem('stockTrackerCompanies', JSON.stringify(newCompanies));
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.log(e.message);
+      console.log(e);
     }
   }
 

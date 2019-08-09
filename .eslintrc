@@ -1,16 +1,17 @@
 {
-  "extends": "airbnb",
-  "parser": "babel-eslint",
-  "rules": {
-    "no-undef": "off",
-    "linebreak-style": "off",
-    "react/prop-types": "off",
-    "react-hooks/exhaustive-deps": "off",
-    "react/destructuring-assignment": [
-      "always",
-      {
-        "ignoreClassFields": true
-      }
-    ]
-  }
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "rules": {
+        "no-undef": "off",
+        "linebreak-style": "off",
+        "react/prop-types": "off",
+        "object-curly-newline": ["error", { "consistent": true }],
+        "react-hooks/exhaustive-deps": "off",
+        "react/destructuring-assignment": [
+            "always",
+            {
+                "ignoreClassFields": true
+            }
+        ]
+    }
 }
